@@ -4,6 +4,12 @@
 
 For now, it's only test of ElasticSearch in NestJS.
 
+## Configuration
+```bash
+# copy and edit .env file
+$ cp .env.dist .env
+```
+
 ## Installation
 
 ```bash

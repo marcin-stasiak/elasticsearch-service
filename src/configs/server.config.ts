@@ -1,4 +1,5 @@
 export default () => ({
-  environment: process.env.NODE_ENV || 'development',
-  port: Number.parseInt(process.env.PORT, 10) || 6464,
+  development: process.env.NODE_ENV !== 'production' || true,
+  port: Number.parseInt(process.env.PORT, 10) || 3000,
+  elasticsearch: process.env.ELASTIC_SEARCH_URL || '',
 });

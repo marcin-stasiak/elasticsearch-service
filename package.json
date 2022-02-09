@@ -30,6 +30,7 @@
     "@nestjs/typeorm": "^8.0.3",
     "apollo-server-express": "^3.6.3",
     "graphql": "^15.8.0",
+    "helmet": "^5.0.2",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

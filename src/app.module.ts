@@ -1,19 +1,32 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { join } from 'path';
 
+import appConfig from './configs/app.config';
 import databaseConfig from './configs/database.config';
 import serverConfig from './configs/server.config';
 
+import { AttributesModule } from './endpoints/attributes/attributes.module';
+import { CategoriesModule } from './endpoints/categories/categories.module';
 import { ProductsModule } from './endpoints/products/products.module';
-import { ElasticSearchModule } from './integrations/elastic-search/elastic-search.module';
+import { SearchModule } from './integrations/search/search.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig, serverConfig],
+      load: [appConfig, databaseConfig, serverConfig],
+    }),
+    GraphQLModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        autoSchemaFile: 'src/schema.gql',
+        debug: configService.get<boolean>('development'),
+        playground: configService.get<boolean>('development'),
+      }),
+      inject: [ConfigService],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -27,12 +40,14 @@ import { ElasticSearchModule } from './integrations/elastic-search/elastic-searc
         entities: [join(__dirname, '**', '*.entity.{ts,js}')],
         autoLoadEntities: true,
         synchronize: true,
-        logging: configService.get<string>('environment') === 'developer',
+        logging: configService.get<boolean>('development'),
       }),
       inject: [ConfigService],
     }),
     ProductsModule,
-    ElasticSearchModule,
+    SearchModule,
+    AttributesModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [],
